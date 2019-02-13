@@ -1,0 +1,32 @@
+{
+  "name": "musicplayer",
+  "version": "1.0.0",
+  "description": "Music Player using webkitSpeechRecognition & DAS",
+  "main": "index.js",
+  "scripts": {
+    "start" : "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chirgjin/music-player.git"
+  },
+  "keywords": [
+    "music",
+    "music",
+    "player",
+    "player",
+    "das",
+    "downloadanysong",
+    "songs"
+  ],
+  "author": "chirgjin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chirgjin/music-player/issues"
+  },
+  "homepage": "https://github.com/chirgjin/music-player#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "request": "^2.88.0"
+  }
+}
