@@ -1,6 +1,7 @@
 const http = require("http");
 const express = require("express");
 const path = require('path');
+const request = require('request');
 
 const host = process.env.HOST || '0.0.0.0';
 const port = process.env.PORT || 8080;
@@ -16,4 +17,54 @@ server.on('listening', () => {
 app.use( express.static( path.join(__dirname, 'public') ) );
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use('*', (req,res,next) => {
 
+    res.error = (obj) => res.json({ status : 'error', data : obj});
+    res.success = (obj) => res.json({ status : 'success', data : obj});
+
+    next();
+});
+
+app.post('/api/search', (req,res) => {
+
+    request('https://www.downloadanysong.com/api/website/v1/', {
+        headers : {
+            'Search-String' : req.body.query
+        }
+    }, (err, resp, body) => {
+
+        if(err) {
+            return res.error(err);
+        }
+
+        try {
+            res.success(typeof body == 'object' ? body : JSON.parse(body));
+        }
+        catch (e) {
+            res.error(e);
+        }
+    });
+});
+
+app.post('/api/download', (req,res) => {
+
+    request.put('https://www.downloadanysong.com/api/website/v1/', {
+        json : {
+            audio_quality : '320',
+            video_id : req.body.videoId
+        }
+    }, (err, resp, body) => {
+        if(err) {
+            console.log(err);
+            return res.error(err);
+        }
+
+        try {
+            res.success(typeof body == 'object' ? body : JSON.parse(body));
+        }
+        catch (e) {
+            console.log(body, e);
+            res.error(e);
+        }
+    })
+});

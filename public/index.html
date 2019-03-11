@@ -1,10 +1,31 @@
 <html>
     <head>
         <title>Music Player</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        
+        <link rel="stylesheet" href="https://cdn.plyr.io/3.5.0/plyr.css" />
     </head>
     <body>
+        
+        <div class='container' >
 
+            <div class='row' >
+                <div class='col-sm' >
+                    <img src='' id='poster' /><br>
+                    <audio id='player' controls ></audio>
+                </div>
+
+                <div class='col-sm' >
+                    PlayList
+                </div>
+
+            </div>
+        </div>
         <script src='./js/jquery.min.js' ></script>
+        <script src="https://cdn.plyr.io/3.5.0/plyr.polyfilled.js"></script>
+        <script src='./js/speechRecog.js' ></script>
         <script src='./js/main.js' ></script>
     </body>
 </html>
