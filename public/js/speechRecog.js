@@ -22,8 +22,21 @@ class SpeechRecog extends webkitSpeechRecognition {
             this.regex(/^(stop|stop playing|close|shutup|shut up)$/i, 'stop'),
             this.regex(/^(start|start playing|play|resume|play songs?|play my song)$/i, 'play'),
             this.regex(/^(pause|wait)$/i, 'pause'),
+            this.regex(/^(restart|start again|play from beginning|from beginning|play again)$/i, 'restart'),
+            this.regex(/^(toggle(playback)?)$/i, 'toggle'),
             this.regex(/^(volume up|louder|turn( the)? volume up|increase volume)$/i, 'volume.up'),
             this.regex(/^(volume down|too loud|turn( the)? volume down|decrease volume)$/i, 'volume.down'),
+            this.regex(/^(max(imum)? volume|increase volume to max|full volume|loudest)$/i, 'volume.max'),
+            this.regex(/^(mute|min volume|minimum volume)$/i, 'volume.mute'),
+            this.regex(/^(fast(er)?|increase speed|more speed)$/i, 'speed.up'),
+            this.regex(/^(slow(er)?|decrease speed|less speed)$/i, 'speed.down'),
+            this.regex(/^(normal speed|back to normal( speed)?)$/i, 'speed.normal'),
+            this.regex(/^(slowest|min(imum)? speed|lowest speed)$/i, 'speed.slowest'),
+            this.regex(/^(fastest|max(imum)? speed|highest speed)$/i, 'speed.fastest'),
+
+            this.regex(/^(next( song)?|play next song|next song please)$/i, 'next'),
+            this.regex(/^(prev(ious)?( song)?|play prev(ious)? song|prev(ious)? song please)$/i, 'prev'),
+            
         ]
     }
 

@@ -6,19 +6,49 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         
         <link rel="stylesheet" href="https://cdn.plyr.io/3.5.0/plyr.css" />
+
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+        
+        <style>
+            .playlist-icon {
+                width:50px;
+                height:50px;
+            }
+
+            #poster {
+                max-width: 100%;
+                max-height:100%;
+            }
+        </style>
     </head>
     <body>
         
         <div class='container' >
-
+            <h2 class='text-center mb-3' >Music Player</h2>
             <div class='row' >
                 <div class='col-sm' >
-                    <img src='' id='poster' /><br>
-                    <audio id='player' controls ></audio>
+                    <div class='card text-center' >
+                        <img id='poster' class="card-img-top"/>
+                        <div class="card-body">
+                            <audio id='player' controls ></audio>
+                        </div>
+                    </div><br>
+                    
+                    <div id="playlist" ></div>
                 </div>
 
                 <div class='col-sm' >
-                    PlayList
+                    
+                    <div class='input-group' >
+                        <input type='text' class='form-control' placeholder="Search Songs" id="search" />
+                        <div class="input-group-append">
+                            <button class='btn btn-primary' id="searchBtn" >
+                                <i class='fas fa-search' ></i>
+                            </button>
+                        </div>
+                    </div>
+                    <br><br>
+                    <div id="searchResults" ></div>
                 </div>
 
             </div>
@@ -26,6 +56,7 @@
         <script src='./js/jquery.min.js' ></script>
         <script src="https://cdn.plyr.io/3.5.0/plyr.polyfilled.js"></script>
         <script src='./js/speechRecog.js' ></script>
+        <script src='./js/musicPlayer.js' ></script>
         <script src='./js/main.js' ></script>
     </body>
 </html>

@@ -60,11 +60,21 @@ app.post('/api/download', (req,res) => {
         }
 
         try {
-            res.success(typeof body == 'object' ? body : JSON.parse(body));
+            const data = typeof body == 'object' ? body : JSON.parse(body);
+            // if(data && data.download_link) {
+            //     data.download_link = "/play?url=" + encodeURIComponent(data.download_link);
+            // }
+            res.success(data);
         }
         catch (e) {
-            console.log(body, e);
+            console.error(e);
             res.error(e);
         }
     })
 });
+
+app.get("/play", (req,res) => {
+
+    request.get(req.query.url).pipe(res);
+
+})

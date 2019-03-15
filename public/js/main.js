@@ -1,104 +1,71 @@
-(() => {
-    jQuery(document).ready(e => {
-        const sp = new SpeechRecog();
-        const fns = {
-            'play' : console.log
-        };
+jQuery(document).ready(e => {
+    const sp = new SpeechRecog;
+    const fns = {
+        play : () => pl.play().catch(err => alert("Cant play song :/")),
+        stop : () => pl.stop(),
+        pause : () => pl.pause(),
+        restart : () => pl.restart(),
+        toggle : () => pl.toggle(),
+        'volume.up' : () => pl.increaseVolume(0.1),
+        'volume.down' : () => pl.decreaseVolume(0.1),
+        'volume.max' : () => pl.volume=1,
+        'volume.mute' : () => pl.muted=true,
+        'speed.up' : () => mp.speed(+1),
+        'speed.down' : () => mp.speed(-1),
+        'speed.normal' : () => pl.speed=1,
+        'speed.slowest' : () => mp.speed(-2192),
+        'speed.fastest' : () => mp.speed(+232),
+        next : () => mp.next(),
+        prev : () => mp.prev(),
 
-        sp.start();
-        sp.addEventListener('result', e => {
+    };
 
-            console.log(e.command);
-        });
-
-        window.pl = new Plyr('#player', {
-            settings : ['loop', 'speed'],
-            keyboard : {
-                global : true
-            }
-        });
-
-        window.mp = new MusicPlayer;
-        let res;
-
-        mp.search('Beach House').then(results => {
-            res = results[1];
-            return mp.generateUrl(res.video_id);
-        }).then(url => {
-
-            pl.source = {
-                title : res.video_title,
-                type : 'audio',
-                sources : [
-                    {
-                        src : url
-                    }
-                ]
-            };
-
-            pl.play();
-
-            $("#poster").prop("src", `https://img.youtube.com/vi/${res.video_id}/hqdefault.jpg`);
-        });
-
+    const pl = new Plyr('#player', {
+        settings : ['loop', 'speed'],
+        keyboard : {
+            global : true
+        }
     });
 
-    class MusicPlayer {
-        get apiUrl() {
-            return '/api';
-        }
-        get searchUrl() {
-            return `${this.apiUrl}/search`;
-        }
-        get downloadUrl() {
-            return `${this.apiUrl}/download`;
-        }
+    const mp = new MusicPlayer(pl, { 
+        poster : $("#poster"),
+        searchInput : $("#search"),
+        searchBtn : $("#searchBtn"),
+        searchResults : $("#searchResults"),
+        playlist : $("#playlist"),
+    });
 
-        get __localStrName() {
-            return 'music-data';
+    sp.addEventListener("result", (e) => {
+        console.log(e.command);
+        if(e && e.command && fns[e.command.command]) {
+            fns[e.command.command]();
         }
+    });
+    
+    sp.start();
 
-        get localData() {
-            let data = localStorage.getItem( this.__localStrName );
-            try {
-                return data != null ? JSON.parse(data) : {};
-            }
-            catch (e) {
-                return {};
-            }
-        }
+    //temp fix when microphone wont start when first calling sp.start :/
+    setTimeout(() => {
+        sp.start();
+    }, 1000);
 
-        storeData(data) {
-            return localStorage.setItem(this.__localStrName, JSON.stringify(data));
-        }
-        
-        constructor() {
+    /*
+    let res;
 
-        }
+    mp.search('Dont call me up').then(results => {
+        res = results[0];
+        return mp.generateUrl(res.video_id);
+    }).then(url => {
 
-        generateUrl(id) {
-            return Promise.resolve().then(() => {
-                return $.post(this.downloadUrl, { videoId : id})
-            }).then(data => {
-                if(!data || data.status !== 'success') {
-                    throw data.data;
-                }
+        res.url = url;
 
-                return data.data.download_link;
-            });
-        }
+        mp.playSong(res);
+    });
+    */
 
-        search(query) {
-            return Promise.resolve().then(() => {
-                return $.post(this.searchUrl, { query : query})
-            }).then(data => {
-                if(!data || data.status !== 'success') {
-                    throw data.data;
-                }
+    console.log(sp);
+    window.sp = sp;
+    window.pl =pl;
 
-                return data.data;
-            });
-        }
-        
-    }
-})();
+    
+});
