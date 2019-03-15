@@ -41,6 +41,7 @@ class MusicPlayer {
      * @param {JQueryObject} dom.searchResults
      * @param {JQueryObject} dom.searchBtn
      * @param {JQueryObject} dom.playlist
+     * @param {JQueryObject} dom.toastHolder
      * 
      */
     constructor(player, dom) {
@@ -51,16 +52,51 @@ class MusicPlayer {
         this.dom.searchBtn.click(e => this.searchSongs());
         this.dom.searchInput.on("keydown", e => e.keyCode === 13 && this.searchSongs() || 1);
 
+        const _this = this;
+        this.dom.searchResults.on("click", ".list-group-item", function (e) {
+            const data = $(this).data("meta");
+            _this.toast(data);
+
+            _this.generateUrl(data.video_id).then(url => {
+                _this.playSong(Object.assign(data, { url : url}));
+            });
+        });
+
+        this.generateState = 0;
         this.searchState = 0;
     }
 
+    toast(data) {
+        const el = $(document.createElement("div"))
+        .addClass("toast")
+        .append(`<div class='toast-body' >Loading ${data.video_title}! <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"></button></div>`)
+        // .addClass("toast-right")
 
-    generateUrl(id) {
+        this.dom.toastHolder.append(el);
+
+        el
+        .toast("show")
+        .on("hidden.bs.toast", (e) => {
+            el.remove();
+        });
+    }
+
+
+    generateUrl(id, stateManagement=true) {
+        let state;
+        
+        if(stateManagement) {
+            state = this.generateState = Math.random();
+        }
+
         return Promise.resolve().then(() => {
             return $.post(this.downloadUrl, { videoId : id})
         }).then(data => {
             if(!data || data.status !== 'success') {
                 throw data.data;
+            }
+            else if(stateManagement && state != this.generateState) {
+                throw new Error("Generate state didn't match");
             }
 
             return data.data.download_link;
@@ -161,7 +197,7 @@ class MusicPlayer {
                 .addClass("list-group-item-action")
                 .html(`<img src='${this.getImage(result)}' class='playlist-icon' /> ${result.video_title}`)
                 .data("meta", result);
-                
+
                 list.append(li);
             });
 

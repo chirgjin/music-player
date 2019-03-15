@@ -33,6 +33,7 @@ jQuery(document).ready(e => {
         searchBtn : $("#searchBtn"),
         searchResults : $("#searchResults"),
         playlist : $("#playlist"),
+        toastHolder : $("#toastHolder"),
     });
 
     sp.addEventListener("result", (e) => {

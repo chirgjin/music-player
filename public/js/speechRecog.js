@@ -31,8 +31,8 @@ class SpeechRecog extends webkitSpeechRecognition {
             this.regex(/^(fast(er)?|increase speed|more speed)$/i, 'speed.up'),
             this.regex(/^(slow(er)?|decrease speed|less speed)$/i, 'speed.down'),
             this.regex(/^(normal speed|back to normal( speed)?)$/i, 'speed.normal'),
-            this.regex(/^(slowest|min(imum)? speed|lowest speed)$/i, 'speed.slowest'),
-            this.regex(/^(fastest|max(imum)? speed|highest speed)$/i, 'speed.fastest'),
+            this.regex(/^(slowest|min(imum)? speed|lowest speed|decrease speed to min(imum)?|lower speed to min(imum)?)$/i, 'speed.slowest'),
+            this.regex(/^(fastest|max(imum)? speed|highest speed|increase speed to min(imum)?)$/i, 'speed.fastest'),
 
             this.regex(/^(next( song)?|play next song|next song please)$/i, 'next'),
             this.regex(/^(prev(ious)?( song)?|play prev(ious)? song|prev(ious)? song please)$/i, 'prev'),
