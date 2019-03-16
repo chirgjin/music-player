@@ -75,6 +75,7 @@ class MusicPlayer {
         this.dom.toastHolder.append(el);
 
         el
+        .toast({delay : 1200})
         .toast("show")
         .on("hidden.bs.toast", (e) => {
             el.remove();
@@ -132,7 +133,7 @@ class MusicPlayer {
         };
 
         this.player.once('canplay', () => {
-            this.player.play().catch(err => alert("Cant play song :/"));
+            //this.player.play().catch(err => alert("Cant play song :/"));
         });
 
         data.image = this.getImage(data);
