@@ -30,6 +30,8 @@ jQuery(document).ready(e => {
 
     pl.autoplay = true;
 
+    pl.on("ended", fns.next);
+
     const mp = new MusicPlayer(pl, { 
         poster : $("#poster"),
         searchInput : $("#search"),

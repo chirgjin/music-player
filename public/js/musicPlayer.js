@@ -68,12 +68,22 @@ class MusicPlayer {
         this.dom.searchInput.on("keydown", e => e.keyCode === 13 && this.searchSongs() || 1);
 
         const _this = this;
-        this.dom.searchResults.on("click", ".list-group-item", function (e) {
-            const data = $(this).data("meta");
+        this.dom.searchResults.on("click", ".list-group-item,.result .play", function (e) {
+            let data;
+            if(this.className.match(/fas .*play/i)) {
+                data = $(this).parent(".result").data("meta");
+            }
+            else {
+                data = $(this).data("meta");
+            }
             
             _this.generateAndPlay(data).then(() => {
                 _this.addToList(data);
             });
+        }).on('click', '.result .addToList', function (e) {
+            const data = $(this).parent(".result").data("meta");
+
+            _this.addToList(data);
         });
 
         this.generateState = 0;
@@ -245,14 +255,15 @@ class MusicPlayer {
 
             this.dom.searchResults.html('');
 
-            const list = $( document.createElement("div") ).addClass("list-group");
+            const list = $( document.createElement("div") )//.addClass("list-group");
 
             results.forEach(result => {
                 
-                const li = $(document.createElement("button"))
-                .addClass("list-group-item")
-                .addClass("list-group-item-action")
-                .html(`<img src='${this.getImage(result)}' class='playlist-icon' /> ${result.video_title}`)
+                // const li = $(document.createElement("button"))
+                // .addClass("list-group-item")
+                // .addClass("list-group-item-action")
+                const li = $(document.createElement("div")).addClass('result')
+                .html(`<img src='${this.getImage(result)}' class='playlist-icon' /> <h5 class='title' >${result.video_title}</h5>  <i class='fas fa-play play' /> <i class='fas fa-plus addToList' />`)
                 .data("meta", result);
 
                 list.append(li);
@@ -333,7 +344,7 @@ class MusicPlayer {
 
         return el;
     }
-    
+
 
     /**
      * 
@@ -392,5 +403,26 @@ class MusicPlayer {
         if(list.length < 1){
             this.dom.playlist.html("<div class='alert alert-danger' >Looks like you don't have any songs in your playlist</div>");
         }
+    }
+
+
+    next() {
+        const current = this.activeSong;
+        const list = this.list;
+
+        let pos = -1;
+
+        for(let i=0;i<list.length;i++) {
+            if(current.video_id == list[i].video_id) {
+                pos = i;
+                break;
+            }
+        }
+
+        if(pos >= list.length - 1 || !list[pos+1]) {
+            pos = -1;
+        }
+
+        this.generateAndPlay(list[pos+1]);
     }
 }
