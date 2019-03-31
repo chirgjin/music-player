@@ -39,11 +39,23 @@ class MusicPlayer {
 
 
     get list() {
-        return this.localData();
+        return this.__list = this.__list || this.localData();
     }
 
     set list(data) {
+        
+        this.__list = data;
         return this.storeData(data);
+        
+        const obj = [];
+        $(data).each((key,val) => {
+            val = Object.assign({}, val);
+            delete val.url;
+            delete val.generatedAt;
+            obj[key] = val;
+        });
+        this.__list = data;
+        return this.storeData(obj);
     }
 
 
@@ -77,9 +89,9 @@ class MusicPlayer {
                 data = $(this).data("meta");
             }
             
-            _this.generateAndPlay(data).then(() => {
-                _this.addToList(data);
-            });
+            _this.addToList(data);
+            _this.generateAndPlay(data);
+
         }).on('click', '.result .addToList', function (e) {
             const data = $(this).parent(".result").data("meta");
 
@@ -90,9 +102,36 @@ class MusicPlayer {
         this.searchState = 0;
         this.activeSong = 0;
 
+        this.buttonEventHandler();
+
         this.renderList();
     }
 
+    buttonEventHandler() {
+        if(!this.dom || !this.dom.buttons) {
+            return ;
+        }
+
+        const btns = this.dom.buttons;
+
+        btns.next.click(e => this.next());
+        btns.prev.click(e => this.prev());
+        btns.forward.click(e => this.player.forward());
+        btns.backward.click(e => this.player.rewind());
+        btns.shuffle.click(e => {
+            let list = this.list;
+            for (let i = list.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [list[i], list[j]] = [list[j], list[i]];
+            }
+            this.list = list;
+
+            this.renderList();
+
+            this.activeSong = this.activeSong;
+        });
+
+    }
     
     /**
      * Generate url & play the song
@@ -103,8 +142,23 @@ class MusicPlayer {
     generateAndPlay(data) {
         this.toast(data);
 
-        return this.generateUrl(data.video_id).then(url => { 
-            this.playSong(Object.assign(data, { url : url}));
+        if(data.url && data.generatedAt && Date.now() - data.generatedAt < 10 * 60 * 1000) {
+            return this.playSong(data);
+        }
+        
+        return this.generateUrl(data.video_id)
+        .then(url => {
+            data.url = url;
+            data.generatedAt = Date.now();
+
+            this.list = this.list.map(obj => {
+                if(obj.video_id == data.video_id) {
+                    obj = data;
+                }
+                return obj;
+            });//save list
+
+            this.playSong(data);
         });
     }
 
@@ -187,12 +241,12 @@ class MusicPlayer {
             title : data.video_title,
             type : 'audio',
             sources : [{
-                src : data.url + (data.url.indexOf("?") > -1 ? "&" : "?") + "rand=" + Math.random(),
+                src : data.url,// + (data.url.indexOf("?") > -1 ? "&" : "?") + "rand=" + Math.random(),
             }]
         };
 
         this.player.once('canplay', () => {
-            //this.player.play().catch(err => alert("Cant play song :/"));
+            this.player.play().catch(err => {});
         });
 
         data.image = this.getImage(data);
@@ -375,7 +429,7 @@ class MusicPlayer {
      * @param {Object} [list] Source playlist
      */
     renderList(pos=null, list=this.list) {
-        
+        list = list || [];
 
         if(pos !== null && list[pos]) {
             const el = this.buildNode(list[pos], pos);
@@ -424,5 +478,25 @@ class MusicPlayer {
         }
 
         this.generateAndPlay(list[pos+1]);
+    }
+
+    prev() {
+        const current = this.activeSong;
+        const list = this.list;
+
+        let pos = -1;
+
+        for(let i=0;i<list.length;i++) {
+            if(current.video_id == list[i].video_id) {
+                pos = i;
+                break;
+            }
+        }
+
+        if(pos <= 0 || !list[pos-1]) {
+            pos = list.length;
+        }
+
+        this.generateAndPlay(list[pos-1]);
     }
 }

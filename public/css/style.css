@@ -92,3 +92,27 @@
     margin-left:8px;
     cursor: pointer;
 }
+
+.control-wrapper .control {
+    background: 0 0;
+    border: 0;
+    border-radius: 3px;
+    padding: 7px;
+    transition: all .3s ease;
+    color: #4f5b5f;
+}
+
+.control-wrapper .control:hover {
+    background-color: #9265e3;
+    color:#fff;
+}
+
+.control-wrapper .control:active,.control-wrapper .control:focus {
+    outline: 0;
+}
+
+.control-wrapper {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}

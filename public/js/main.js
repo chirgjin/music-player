@@ -1,7 +1,7 @@
 jQuery(document).ready(e => {
     const sp = new SpeechRecog;
     const fns = {
-        play : () => pl.play().catch(err => alert("Cant play song :/")),
+        play : () => pl.play().catch(err => {}),
         stop : () => pl.stop(),
         pause : () => pl.pause(),
         restart : () => pl.restart(),
@@ -17,6 +17,7 @@ jQuery(document).ready(e => {
         'speed.fastest' : () => mp.speed(+232),
         next : () => mp.next(),
         prev : () => mp.prev(),
+        shuffle : () => $("#shuffle").click(),
 
     };
 
@@ -39,6 +40,13 @@ jQuery(document).ready(e => {
         searchResults : $("#searchResults"),
         playlist : $("#playlist").find("ul"),
         toastHolder : $("#toastHolder"),
+        buttons : {
+            next : $("#next"),
+            prev : $("#prev"),
+            backward : $("#backward"),
+            forward : $("#forward"),
+            shuffle : $("#shuffle"),
+        }
     });
 
     sp.addEventListener("result", (e) => {
@@ -58,6 +66,7 @@ jQuery(document).ready(e => {
     console.log(sp);
     window.sp = sp;
     window.pl =pl;
+    window.mp = mp;
 
     
 });
