@@ -46,7 +46,8 @@ jQuery(document).ready(e => {
             backward : $("#backward"),
             forward : $("#forward"),
             shuffle : $("#shuffle"),
-        }
+        },
+        songTitle : $("#songTitle"),
     });
 
     sp.addEventListener("result", (e) => {

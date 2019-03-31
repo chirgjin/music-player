@@ -254,6 +254,8 @@ class MusicPlayer {
         this.dom.poster.prop("src", data.image);
 
         this.activeSong = data;
+
+        this.dom.songTitle.html(`Playing - ${data.video_title}`);
     }
 
 
