@@ -13,13 +13,23 @@ class MusicPlayer {
         return 'music-data';
     }
 
+    get activeSong() {
+        return this.__activeSong;
+    }
+
+    set activeSong(song) {
+        this.__activeSong = song;
+
+        this.setActive(song || {video_id : song});
+    }
+
     localData() {
         let data = localStorage.getItem( this.__localStrName );
         try {
-            return data != null ? JSON.parse(data) : {};
+            return data != null ? JSON.parse(data) : [];
         }
         catch (e) {
-            return {};
+            return [];
         }
     }
 
@@ -28,8 +38,13 @@ class MusicPlayer {
     }
 
 
+    get list() {
+        return this.localData();
+    }
 
-
+    set list(data) {
+        return this.storeData(data);
+    }
 
 
     /**
@@ -55,17 +70,41 @@ class MusicPlayer {
         const _this = this;
         this.dom.searchResults.on("click", ".list-group-item", function (e) {
             const data = $(this).data("meta");
-            _this.toast(data);
-
-            _this.generateUrl(data.video_id).then(url => {
-                _this.playSong(Object.assign(data, { url : url}));
+            
+            _this.generateAndPlay(data).then(() => {
+                _this.addToList(data);
             });
         });
 
         this.generateState = 0;
         this.searchState = 0;
+        this.activeSong = 0;
+
+        this.renderList();
     }
 
+    
+    /**
+     * Generate url & play the song
+     * @param {Object} data Song Data
+     * @param {String} data.video_title Song Name
+     * @param {String} data.video_id Youtube/Spotify Id
+     */
+    generateAndPlay(data) {
+        this.toast(data);
+
+        return this.generateUrl(data.video_id).then(url => { 
+            this.playSong(Object.assign(data, { url : url}));
+        });
+    }
+
+    
+    /**
+     * Show toast to user
+     * @param {Object} data Song Data
+     * @param {String} data.video_title Song Name
+     * @param {String} data.video_id Youtube/Spotify Id
+     */
     toast(data) {
         const el = $(document.createElement("div"))
         .addClass("toast")
@@ -82,7 +121,11 @@ class MusicPlayer {
         });
     }
 
-
+    /**
+     * Generate url of given song
+     * @param {String} id Video Id of Song
+     * @param {Boolean} stateManagement 
+     */
     generateUrl(id, stateManagement=true) {
         let state;
         
@@ -104,6 +147,10 @@ class MusicPlayer {
         });
     }
 
+    /**
+     * 
+     * @param {String} query Search String
+     */
     search(query) {
         return Promise.resolve().then(() => {
             return $.post(this.searchUrl, { query : query})
@@ -115,6 +162,8 @@ class MusicPlayer {
             return data.data;
         });
     }
+
+
     /**
      * 
      * @param {Object} data Data of song
@@ -139,7 +188,10 @@ class MusicPlayer {
         data.image = this.getImage(data);
         this.player.poster = data.image;
         this.dom.poster.prop("src", data.image);
+
+        this.activeSong = data;
     }
+
 
     /**
      * 
@@ -150,6 +202,8 @@ class MusicPlayer {
     getImage(data) {
         return  data.image || `https://img.youtube.com/vi/${data.video_id}/hqdefault.jpg`;
     }
+
+
     /**
      * 
      * @param {Number} change 
@@ -170,7 +224,9 @@ class MusicPlayer {
     }
 
 
-    
+    /**
+     * Search Songs and display the results
+     */
     searchSongs() {
         const val = this.dom.searchInput.val().trim();
 
@@ -213,5 +269,128 @@ class MusicPlayer {
         });
 
         this.dom.searchResults.html(`<span class='spinner-border text-${spinnerClasses[ Math.floor(Math.random()* (spinnerClasses.length-1)) ]|| 'info'}' /> Loading`);
+    }
+
+
+    /**
+     * Add new song to list at defined pos
+     * @param {Object} song Song Data
+     * @param {String} song.video_title Song Name
+     * @param {String} song.video_id Youtube/Spotify Id
+     * @param {Number} pos position to insert at
+     */
+    addToList(song, pos=-1) {
+        const list = this.list;
+
+        if(pos > list.length) {
+            pos = list.length;
+        }
+        else if(pos < 0) {
+            pos = list.length - pos + 1;
+        }
+        
+        //check if song already exists in list
+        for(let i=0;i<list.length;i++) {
+            if(list[i] && list[i].video_id == song.video_id) {
+                return null; //dont add cuz exists
+            }
+        }
+
+        list.splice(pos, 0, song);
+
+        this.list = list; //save
+
+        this.renderList(pos, list);
+
+        return true;
+    }
+
+    
+    /**
+     * Add new song to list at defined pos
+     * @param {Object} song Song Data
+     * @param {String} song.video_title Song Name
+     * @param {String} song.video_id Youtube/Spotify Id
+     * @param {Number} pos position to insert at
+     */
+    buildNode(song, pos) {
+        const el = $(document.createElement("li"))
+        .append(`<span class='num' >${ pos+1 < 10 ? '0' + (pos+1) : pos+1 }.</span>`)
+        .append(`<span class='title' >${song.video_title}`)
+        .append(`<span class='delete' ><i class='fas fa-times-circle' />`)
+        .attr("data-id", song.video_id);
+
+        el.find(".fas").click(e => {
+            this.removeFromList(song.video_id);
+            el.remove();
+            e.stopPropagation();
+        });
+
+        el.click(e => {
+            this.generateAndPlay(song);
+            this.activeSong = song;
+        });
+
+        return el;
+    }
+    
+
+    /**
+     * 
+     * @param {String} id Video id of the song to remove
+     */
+    removeFromList(id) {
+        this.list = this.list.filter(song => song.video_id != id);
+    }
+
+
+    /**
+     * Set the song to active
+     * @param {Object} song Song Data
+     * @param {String} song.video_title Song Name
+     * @param {String} song.video_id Youtube/Spotify Id
+     */
+    setActive(song) {
+        
+        this.dom.playlist.find("li.active").removeClass("active");
+
+        this.dom.playlist.find(`[data-id='${song.video_id}']`).addClass("active");
+    }
+
+
+    /**
+     * Render playlist
+     * @param {Number} [pos] Position which was modified
+     * @param {Object} [list] Source playlist
+     */
+    renderList(pos=null, list=this.list) {
+        
+
+        if(pos !== null && list[pos]) {
+            const el = this.buildNode(list[pos], pos);
+
+            if(pos != list.length-1) {
+                const plList = this.dom.playlist.find("li");
+                $(plList[pos]).before(el);
+            }
+            else {
+                this.dom.playlist.append(el);
+            }
+
+            return ;
+        }
+
+        this.dom.playlist.html('');
+
+        list.forEach( (song,i) => {
+            
+            this.dom.playlist.append(
+                this.buildNode(song, i)
+            );
+        });
+
+        if(list.length < 1){
+            this.dom.playlist.html("<div class='alert alert-danger' >Looks like you don't have any songs in your playlist</div>");
+        }
     }
 }

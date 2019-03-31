@@ -24,15 +24,18 @@ jQuery(document).ready(e => {
         settings : ['loop', 'speed'],
         keyboard : {
             global : true
-        }
+        },
+        blankVideo : 'sound/blank.mp3',
     });
+
+    pl.autoplay = true;
 
     const mp = new MusicPlayer(pl, { 
         poster : $("#poster"),
         searchInput : $("#search"),
         searchBtn : $("#searchBtn"),
         searchResults : $("#searchResults"),
-        playlist : $("#playlist"),
+        playlist : $("#playlist").find("ul"),
         toastHolder : $("#toastHolder"),
     });
 
@@ -46,23 +49,9 @@ jQuery(document).ready(e => {
     sp.start();
 
     //temp fix when microphone wont start when first calling sp.start :/
-    setTimeout(() => {
-        sp.start();
-    }, 1000);
-
-    /*
-    let res;
-
-    mp.search('Dont call me up').then(results => {
-        res = results[0];
-        return mp.generateUrl(res.video_id);
-    }).then(url => {
-
-        res.url = url;
-
-        mp.playSong(res);
-    });
-    */
+    // setTimeout(() => {
+    //     sp.start();
+    // }, 1000);
 
     console.log(sp);
     window.sp = sp;

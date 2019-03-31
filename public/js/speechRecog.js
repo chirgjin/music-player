@@ -21,7 +21,7 @@ class SpeechRecog extends webkitSpeechRecognition {
             // this.regex(/^(start|start playing)$/i, 'start'),
             this.regex(/^(stop|stop playing|close|shutup|shut up)$/i, 'stop'),
             this.regex(/^(start|start playing|play|resume|play songs?|play my song)$/i, 'play'),
-            this.regex(/^(pause|wait)$/i, 'pause'),
+            this.regex(/^(pause|wait|pause th(is|e) song)$/i, 'pause'),
             this.regex(/^(restart|start again|play from beginning|from beginning|play again)$/i, 'restart'),
             this.regex(/^(toggle(playback)?)$/i, 'toggle'),
             this.regex(/^(volume up|louder|turn( the)? volume up|increase volume)$/i, 'volume.up'),
@@ -53,13 +53,18 @@ class SpeechRecog extends webkitSpeechRecognition {
         super();
         this.continuous = true;
 
-        window.addEventListener('beforeunload', (e) => {
+        /*window.addEventListener('beforeunload', (e) => {
             this.stop();
-        });
+        });*/
 
         this.addEventListener('result', (e) => {
             e.result = this.parseResults(e);
             e.command = this.matchCommands(e.result);
+        });
+
+        this.addEventListener("end", (e) => {
+
+            this.start();
         });
     }
 
