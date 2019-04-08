@@ -1,117 +1,85 @@
-if(!window.hasOwnProperty('webkitSpeechRecognition')) {
-    (() => {
-
-        window.webkitSpeechRecognition = class {};
-
-        alert("Your browser is not supported");
-    })();
-}
-
-class SpeechRecog extends webkitSpeechRecognition {
-    get onresult() {
-        return () => {};
-    }
-
-    set onresult(f) {
-        this.addEventListener('result', f);
-    }
-
+class SpeechRecog {
     get commands() {
-        return [
-            // this.regex(/^(start|start playing)$/i, 'start'),
-            this.regex(/^(stop|stop playing|close|shutup|shut up)$/i, 'stop'),
-            this.regex(/^(start|start playing|play|resume|play songs?|play my song)$/i, 'play'),
-            this.regex(/^(pause|wait|pause th(is|e) song)$/i, 'pause'),
-            this.regex(/^(restart|start again|play from beginning|from beginning|play again)$/i, 'restart'),
-            this.regex(/^(toggle(playback)?)$/i, 'toggle'),
-            this.regex(/^(volume up|louder|turn( the)? volume up|increase volume)$/i, 'volume.up'),
-            this.regex(/^(volume down|too loud|turn( the)? volume down|decrease volume)$/i, 'volume.down'),
-            this.regex(/^(max(imum)? volume|increase volume to max|full volume|loudest)$/i, 'volume.max'),
-            this.regex(/^(mute|min volume|minimum volume)$/i, 'volume.mute'),
-            this.regex(/^(fast(er)?|increase speed|more speed)$/i, 'speed.up'),
-            this.regex(/^(slow(er)?|decrease speed|less speed)$/i, 'speed.down'),
-            this.regex(/^(normal speed|back to normal( speed)?)$/i, 'speed.normal'),
-            this.regex(/^(slowest|min(imum)? speed|lowest speed|decrease speed to min(imum)?|lower speed to min(imum)?)$/i, 'speed.slowest'),
-            this.regex(/^(fastest|max(imum)? speed|highest speed|increase speed to min(imum)?)$/i, 'speed.fastest'),
+        return {
+            'start( playing)' : this._exec('play'),
+            'play( songs)' :  this._exec('play'),
+            // 'play *song' :  this._exec('play'),
+            'play my song(s)' : this._exec('play'),
+            'resume( song(s))' : this._exec('play'),
 
-            this.regex(/^(shuffle|shuffle (the )?songs?|shuffle (this|my )?(play)?list)$/i, 'shuffle'),
-            this.regex(/^(next( song)?|play next song|next song please)$/i, 'next'),
-            this.regex(/^(prev(ious)?( song)?|play prev(ious)? song|prev(ious)? song please)$/i, 'prev'),
+            'stop( playing)' : this._exec('stop'),
+            'close' : this._exec('stop'),
+            'shut( )up' : this._exec('stop'),
+
+            'pause( *song)' : this._exec('pause'),
+            'wait' : this._exec('pause'),
+
+            'restart' : this._exec('restart'),
+            'start again' : this._exec('restart'),
+            'play from( the) beginning' : this._exec('restart'),
+            'play again' : this._exec('restart'),
+
+            'toggle( playback)' : this._exec('toggle'),
+
+            'volume up' : this._exec('volume.up'),
+            'increase volume' : this._exec('volume.up'),
+            'turn( the) volume up' : this._exec('volume.up'),
+            'louder' : this._exec('volume.up'),
+
+            'volume down' : this._exec('volume.down'),
+            'too loud' : this._exec('volume.down'),
+            'turn( the) volume down' : this._exec('volume.down'),
+            'decrease volume' : this._exec('volume.down'),
+
+            'max(imum) volume' : this._exec('volume.max'),
+            'increase volume to max(imum)' : this._exec('volume.max'),
+            'full volume' : this._exec('volume.max'),
+
+            'mute' : this._exec('volume.mute'),
+            'min(imum) volume' : this._exec('volume.mute'),
+
+            'fast(er)' : this._exec('speed.up'),
+            'increase speed' : this._exec('speed.up'),
             
-        ]
+            'slow(er)' : this._exec('speed.down'),
+            'decrease speed': this._exec('speed.down'),
+
+            'normal speed' : this._exec('speed.normal'),
+            'back to normal( speed)' : this._exec('speed.normal'),
+
+            'slowest speed' : this._exec('speed.slowest'),
+            'min(imum) speed' : this._exec('speed.slowest'),
+
+            'fastest speed' : this._exec('speed.fastest'),
+            'max(imum) speed' : this._exec('speed.fastest'),
+
+            'shuffle( *songs)' : this._exec('shuffle'),
+            '(play )next( song)' : this._exec('next'),
+            '(play )prev(ious)( song)' : this._exec('prev'),
+        }
     }
 
-    /**
-     * 
-     * @param {RegExp} r Regular Expression to match
-     * @param {String} name Command to execute
-     */
-    regex(r, name) {
-        return { regex : r, command : name };
-    }
-
-    constructor() {
-        super();
-        this.continuous = true;
-
-        /*window.addEventListener('beforeunload', (e) => {
-            this.stop();
-        });*/
-
-        this.addEventListener('result', (e) => {
-            e.result = this.parseResults(e);
-            e.command = this.matchCommands(e.result);
-        });
-
-        this.addEventListener("end", (e) => {
-
-            this.start();
-        });
-    }
-
-    /**
-     * 
-     * @param {SpeechRecognitionEvent} evt Result Event
-     * 
-     * @returns {String} result text
-     */
-    parseResults(evt) {
-
-        /*const res = Array.prototype.slice.call(evt.results).sort(
-            (a,b) => {
-                const x = a && a[0] && a[0].confidence || 0;
-                const y = b && b[0] && b[0].confidence || 0;
-
-                return y-x;
-            }
-        );*/
-        const res = evt.results;
-        console.log(res);
-
-        return res && res[ res.length - 1 ] && res[res.length - 1][0] && res[res.length - 1][0].transcript || '';
-    }
-
-    matchCommands(result) {
+    constructor(fns) {
         
-
-        const commands = this.commands;
-
-        result = result.trim();
-
-        for(let i=0; i<commands.length; i++) {
-            const command = commands[i];
-            if(typeof command != 'object') {
-                console.log("wut?");
-                continue;
-            }
-
-            if(result.match(command.regex)) {
-                return Object.assign(command, {
-                    matches : result.match(command.regex)
-                });
-            }
+        if(!annyang) {
+            return alert("Speech Recognition could not be loaded");
         }
 
-        return null;
+        this.functions = fns;
+        annyang.addCommands( this.commands );
+
+        this.start();
+    }
+
+    _exec(name) {
+        
+        return () => {
+            console.log(`called ${name}`, this.functions[name]);
+            this.functions[name] ? this.functions[name]() : null;
+        }
+    }
+
+    start() {
+        annyang.start();
     }
 }

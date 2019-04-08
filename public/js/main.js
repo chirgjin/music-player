@@ -1,10 +1,9 @@
 jQuery(document).ready(e => {
-    const sp = new SpeechRecog;
     const fns = {
         play : () => pl.play().catch(err => {}),
         stop : () => pl.stop(),
         pause : () => pl.pause(),
-        restart : () => pl.restart(),
+        restart : () => pl.play(pl.restart()),
         toggle : () => pl.toggle(),
         'volume.up' : () => pl.increaseVolume(0.1),
         'volume.down' : () => pl.decreaseVolume(0.1),
@@ -20,6 +19,7 @@ jQuery(document).ready(e => {
         shuffle : () => $("#shuffle").click(),
 
     };
+    const sp = new SpeechRecog(fns);
 
     const pl = new Plyr('#player', {
         settings : ['loop', 'speed'],
@@ -50,12 +50,12 @@ jQuery(document).ready(e => {
         songTitle : $("#songTitle"),
     });
 
-    sp.addEventListener("result", (e) => {
+    /*sp.addEventListener("result", (e) => {
         console.log(e.command);
         if(e && e.command && fns[e.command.command]) {
             fns[e.command.command]();
         }
-    });
+    });*/
     
     sp.start();
 
