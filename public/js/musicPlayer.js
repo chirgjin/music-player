@@ -135,6 +135,7 @@ class MusicPlayer {
             a.href = this.activeSong.url;
 
             a.target = "_blank";
+            a.download = true;
 
             document.body.appendChild(a);
 
