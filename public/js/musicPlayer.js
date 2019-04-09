@@ -386,6 +386,8 @@ class MusicPlayer {
 
         this.renderList(pos, list);
 
+        this.activeSong = this.activeSong;
+
         return true;
     }
 
