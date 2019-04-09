@@ -1,8 +1,4 @@
 jQuery(document).ready(e => {
-    const speak = (msg) => {
-        const obj = new SpeechSynthesisUtterance(msg);
-        speechSynthesis.speak(obj);
-    };
 
     const fns = {
         play : () => pl.play().catch(err => {}),
@@ -49,7 +45,6 @@ jQuery(document).ready(e => {
                 el.find('.play').click();
                 msg = `Playing ${el.find('.title').text()}`;
             }
-            console.log(msg);
 
             const obj = new SpeechSynthesisUtterance(msg);
             speechSynthesis.speak(obj);
@@ -67,20 +62,18 @@ jQuery(document).ready(e => {
             const list = mp.list;
             let msg = '';
 
-            console.log(list[num-1]);
             if(!list[num-1]) {
                 msg = `Could not find song number ${num}`;
             }
             else {
                 $(`[data-id="${list[num-1].video_id}"]`).click();
-                console.log($(`[data-id="${list[num-1].video_id}"]`));
                 msg = `Playing ${list[num-1].video_title}`;
             }
             const obj = new SpeechSynthesisUtterance(msg);
             speechSynthesis.speak(obj);
         },
     };
-    const sp = new SpeechRecog(fns);
+    new SpeechRecog(fns);
 
     const pl = new Plyr('#player', {
         settings : ['loop', 'speed'],
@@ -111,25 +104,6 @@ jQuery(document).ready(e => {
         },
         songTitle : $("#songTitle"),
     });
-
-    /*sp.addEventListener("result", (e) => {
-        console.log(e.command);
-        if(e && e.command && fns[e.command.command]) {
-            fns[e.command.command]();
-        }
-    });*/
-    
-    sp.start();
-
-    //temp fix when microphone wont start when first calling sp.start :/
-    // setTimeout(() => {
-    //     sp.start();
-    // }, 1000);
-
-    console.log(sp);
-    window.sp = sp;
-    window.pl =pl;
-    window.mp = mp;
 
     
 });
