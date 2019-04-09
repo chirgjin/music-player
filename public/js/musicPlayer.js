@@ -128,7 +128,7 @@ class MusicPlayer {
 
             this.renderList();
 
-            this.activeSong = this.activeSong;
+            // this.activeSong = this.activeSong;
         });
         btns.download.click(e => {
             const a = document.createElement("a");
@@ -405,8 +405,8 @@ class MusicPlayer {
         .attr("data-id", song.video_id);
 
         el.find(".fas").click(e => {
-            this.removeFromList(song.video_id);
             el.remove();
+            this.removeFromList(song.video_id);
             e.stopPropagation();
         });
 
@@ -425,6 +425,7 @@ class MusicPlayer {
      */
     removeFromList(id) {
         this.list = this.list.filter(song => song.video_id != id);
+        this.updateNumbers();
     }
 
 
@@ -441,6 +442,14 @@ class MusicPlayer {
         this.dom.playlist.find(`[data-id='${song.video_id}']`).addClass("active");
     }
 
+
+    updateNumbers() {
+        this.dom.playlist.find('li').each( (i,li) => {
+            li = $(li);
+
+            li.find(".num").html( i+1 );
+        });
+    }
 
     /**
      * Render playlist
@@ -460,6 +469,10 @@ class MusicPlayer {
             else {
                 this.dom.playlist.append(el);
             }
+            
+            this.updateNumbers();
+            
+            this.activeSong = this.activeSong; //reset property
 
             return ;
         }
