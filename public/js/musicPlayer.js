@@ -130,7 +130,22 @@ class MusicPlayer {
 
             this.activeSong = this.activeSong;
         });
+        btns.download.click(e => {
+            const a = document.createElement("a");
+            a.href = this.activeSong.url;
 
+            a.target = "_blank";
+
+            document.body.appendChild(a);
+
+            a.style.display = 'none';
+
+            a.click();
+
+            setTimeout(() => {
+                a.parentNode.removeChild(a);
+            },2500);
+        });
     }
     
     /**

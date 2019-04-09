@@ -85,7 +85,7 @@ class SpeechRecog {
                 }
             },
 
-            'play song number :num from playlist' : num => {
+            'play song number :num from( my) playlist' : num => {
                 const digits = ['zero', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
 
                 if( digits.indexOf(num) > -1 ) {

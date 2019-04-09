@@ -107,6 +107,7 @@ jQuery(document).ready(e => {
             backward : $("#backward"),
             forward : $("#forward"),
             shuffle : $("#shuffle"),
+            download : $("#download"),
         },
         songTitle : $("#songTitle"),
     });
