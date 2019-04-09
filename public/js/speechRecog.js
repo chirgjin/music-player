@@ -56,6 +56,32 @@ class SpeechRecog {
             'shuffle( *songs)' : this._exec('shuffle'),
             '(play )next( song)' : this._exec('next'),
             '(play )prev(ious)( song)' : this._exec('prev'),
+
+
+            'find and play *song' : song => {
+                this.functions.findAndPlay(song);
+            },
+
+            'find and play' : () => {
+                //do nothing
+            },
+
+            'find *song' : (song) => {
+                this.functions.findSong(song);
+            },
+
+            'play song( number) :num' : (num) => {
+                const digits = ['', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
+
+                if( digits.indexOf(num) > -1 ) {
+                    num = digits.indexOf(num);
+                }
+                
+                if( parseInt(num) == num ) {
+                    this.functions.playSong(num);
+                }
+            },
+
         }
     }
 
@@ -67,6 +93,7 @@ class SpeechRecog {
 
         this.functions = fns;
         annyang.addCommands( this.commands );
+        annyang.debug(true);
 
         this.start();
     }

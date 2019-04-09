@@ -1,4 +1,9 @@
 jQuery(document).ready(e => {
+    const speak = (msg) => {
+        const obj = new SpeechSynthesisUtterance(msg);
+        speechSynthesis.speak(obj);
+    };
+
     const fns = {
         play : () => pl.play().catch(err => {}),
         stop : () => pl.stop(),
@@ -18,6 +23,44 @@ jQuery(document).ready(e => {
         prev : () => mp.prev(),
         shuffle : () => $("#shuffle").click(),
 
+
+        findSong : (query,spk=1) => {
+            
+            const obj = new SpeechSynthesisUtterance(`Looking for ${query}`);
+            speechSynthesis.speak(obj);
+
+            mp.dom.searchInput.val(query);
+            return mp.searchSongs().then(() => {
+                if(spk) {
+                    const msg = new SpeechSynthesisUtterance(`Found ${mp.dom.searchResults.find('.result').length} Results for ${query}`);
+                    speechSynthesis.speak(msg);
+                }
+            });
+        },
+
+        playSong : pos => {
+            const el = $( mp.dom.searchResults.find('.result').get( parseInt(pos) - 1 || 0 ) );
+            let msg = '';
+            if(el.length < 1) {
+                msg = `Could not find song number ${pos}`;
+            }
+            else {
+                el.find('.play').click();
+                msg = `Playing ${el.find('.title').text()}`;
+            }
+            console.log(msg);
+
+            const obj = new SpeechSynthesisUtterance(msg);
+            speechSynthesis.speak(obj);
+        },
+
+        findAndPlay : query => {
+
+            return fns.findSong(query, 0).then(() => {
+                fns.playSong(1);
+            });
+            
+        }
     };
     const sp = new SpeechRecog(fns);
 
