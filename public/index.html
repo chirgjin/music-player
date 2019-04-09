@@ -14,7 +14,10 @@
     <body>
         
         <div class='container' >
-            <h2 class='text-center mb-3' >Music Player</h2>
+            <h2 class='text-center mb-3' >
+                Music Player
+                <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#help" >Help</button>
+            </h2>
             <div class='row' >
                 <div class='col-sm' >
                     <div class='card text-center' >
@@ -35,17 +38,7 @@
                     </div><br>
                     
                     <div id="playlist" >
-                        <ul class="plList" >
-                            <!-- <li class="active">
-                                <span class="num" >01.</span>
-                                <span class="title">Hope</span>
-                                <span class="delete" ><i class="fas fa-times-circle" data-icon="delete"></i></span>
-                            </li>
-                            <li>
-                                <span class="num" >01.</span> 
-                                <span class="title">Hope ChainSmokers some big ass title soo big bigbibgibgibgigbigbi</span>
-                            </li> -->
-                        </ul>
+                        <ul class="plList" ></ul>
                     </div>
                 </div>
 
@@ -76,3 +69,98 @@
         <script src='./js/main.js' ></script>
     </body>
 </html>
+<div class="modal fade" id="help" tabindex="-1" role="dialog" >
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title text-center">Voice Commands</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- <h3 class="title" >Voice Commands:</h3> -->
+
+                <table class="table table-bordered table-striped" >
+                    <thead>
+                        <tr>
+                            <th>Command(s)</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Play/Resume</td>
+                            <td>Play or Resume the current song</td>
+                        </tr>
+                        <tr>
+                            <td>Stop/Close</td>
+                            <td>Stop playing the current song</td>
+                        </tr>
+                        <tr>
+                            <td>Pause</td>
+                            <td>Pause playing the current song</td>
+                        </tr>
+                        <tr>
+                            <td>Restart/Start Again</td>
+                            <td>Play the song from beginning</td>
+                        </tr>
+                        <tr>
+                            <td>Toggle Playback</td>
+                            <td>toggles the current play state of song</td>
+                        </tr>
+                        <tr>
+                            <td>Increase Volume/volume up/turn the volume up</td>
+                            <td>Increase the volume by 10% (upto 100%)</td>
+                        </tr>
+                        <tr>
+                            <td>Decrease volume/volume down/turn the volume down</td>
+                            <td>Decrease volume by 10%</td>
+                        </tr>
+                        <tr>
+                            <td>maximum volume/increase volume to maximum</td>
+                            <td>Set volume to 100%</td>
+                        </tr>
+                        <tr>
+                            <td>Mute/Minimum volume</td>
+                            <td>Set volume to 0%</td>
+                        </tr>
+                        <tr>
+                            <td>increase speed</td>
+                            <td>Increase playback speed by 1 step</td>
+                        </tr>
+                        <tr>
+                            <td>decrease speed</td>
+                            <td>Decrease playback speed by 1 step</td>
+                        </tr>
+                        <tr>
+                            <td>find and play 'song'</td>
+                            <td>Search for the song & play the first result</td>
+                        </tr>
+                        <tr>
+                            <td>Find 'song'</td>
+                            <td>Search for the song and display results</td>
+                        </tr>
+                        <tr>
+                            <td>Play song number 'x'</td>
+                            <td>Plays the given song 'number' from search results</td>
+                        </tr>
+                        <tr>
+                            <td>Play song number 'x' from playlist</td>
+                            <td>Plays the given song 'number' from playlist</td>
+                        </tr>
+                        <tfoot>
+                            <tr>
+                                <th>Command(s)</th>
+                                <th>Description</th>
+                            </tr>
+                        </tfoot>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

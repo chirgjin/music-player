@@ -11,7 +11,7 @@ class SpeechRecog {
             'close' : this._exec('stop'),
             'shut( )up' : this._exec('stop'),
 
-            'pause( *song)' : this._exec('pause'),
+            'pause( song)' : this._exec('pause'),
             'wait' : this._exec('pause'),
 
             'restart' : this._exec('restart'),
@@ -37,6 +37,8 @@ class SpeechRecog {
 
             'mute' : this._exec('volume.mute'),
             'min(imum) volume' : this._exec('volume.mute'),
+
+            'unmute' : this._exec('volume.unmute'),
 
             'fast(er)' : this._exec('speed.up'),
             'increase speed' : this._exec('speed.up'),
@@ -71,16 +73,43 @@ class SpeechRecog {
             },
 
             'play song( number) :num' : (num) => {
-                const digits = ['', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
+                const digits = ['zero', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
 
                 if( digits.indexOf(num) > -1 ) {
                     num = digits.indexOf(num);
                 }
                 
+                console.log(num);
                 if( parseInt(num) == num ) {
-                    this.functions.playSong(num);
+                    this.functions.playSong(parseInt(num));
                 }
             },
+
+            'play song number :num from playlist' : num => {
+                const digits = ['zero', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
+
+                if( digits.indexOf(num) > -1 ) {
+                    num = digits.indexOf(num);
+                }
+                
+                console.log(num);
+                if( parseInt(num) == num ) {
+                    this.functions.playFromList(parseInt(num));
+                }
+            },
+
+            'set volume to :vol' : vol => {
+
+                let n = parseFloat(vol);
+
+                if(vol && vol.toString().match(/%|percent/)) {
+                    n = n / 100;
+                }
+
+                if( !isNaN(n)) {
+                    this.functions['volume.set'](n);
+                }
+            }
 
         }
     }

@@ -178,7 +178,7 @@ class MusicPlayer {
         this.dom.toastHolder.append(el);
 
         el
-        .toast({delay : 1200})
+        .toast({delay : 3000})
         .toast("show")
         .on("hidden.bs.toast", (e) => {
             el.remove();
@@ -305,7 +305,7 @@ class MusicPlayer {
         const state = this.searchState = Math.random();
         
         this.dom.searchResults.html(`<span class='spinner-border text-${spinnerClasses[ Math.floor(Math.random()* (spinnerClasses.length-1)) ]|| 'info'}' /> Loading`);
-        
+
         return this.search(val).then(results => {
             if(this.searchState != state) {
                 return ;

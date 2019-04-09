@@ -116,3 +116,8 @@
     display: flex;
     justify-content: center;
 }
+.float-right {
+    float:right;
+}
+.modal-header {
+}

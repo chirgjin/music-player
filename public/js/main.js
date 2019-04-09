@@ -14,6 +14,7 @@ jQuery(document).ready(e => {
         'volume.down' : () => pl.decreaseVolume(0.1),
         'volume.max' : () => pl.volume=1,
         'volume.mute' : () => pl.muted=true,
+        'volume.set' : (n) => pl.volume = !isNaN(parseFloat(n)) ? parseFloat(n) : pl.volume,
         'speed.up' : () => mp.speed(+1),
         'speed.down' : () => mp.speed(-1),
         'speed.normal' : () => pl.speed=1,
@@ -60,7 +61,24 @@ jQuery(document).ready(e => {
                 fns.playSong(1);
             });
             
-        }
+        },
+
+        playFromList : num => {
+            const list = mp.list;
+            let msg = '';
+
+            console.log(list[num-1]);
+            if(!list[num-1]) {
+                msg = `Could not find song number ${num}`;
+            }
+            else {
+                $(`[data-id="${list[num-1].video_id}"]`).click();
+                console.log($(`[data-id="${list[num-1].video_id}"]`));
+                msg = `Playing ${list[num-1].video_title}`;
+            }
+            const obj = new SpeechSynthesisUtterance(msg);
+            speechSynthesis.speak(obj);
+        },
     };
     const sp = new SpeechRecog(fns);
 
