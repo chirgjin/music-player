@@ -128,7 +128,7 @@ class MusicPlayer {
 
             this.renderList();
 
-            // this.activeSong = this.activeSong;
+            this.activeSong = this.activeSong;
         });
         btns.download.click(e => {
             const a = document.createElement("a");
