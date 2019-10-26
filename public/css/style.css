@@ -121,3 +121,15 @@
 }
 .modal-header {
 }
+.row{
+    flex-direction: column-reverse;
+}
+.card-body{
+        padding-top: 8rem;
+    padding-bottom: 8rem;
+}
+@media only screen and (max-width:320px){
+    audio{
+        width:250px;
+    }
+}
