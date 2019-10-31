@@ -74,7 +74,7 @@ app.post('/api/download', (req,res) => {
 });
 
 app.get("/play", (req,res) => {
-
+    console.log(req.query.url);
     request.get(req.query.url).pipe(res);
 
 })
